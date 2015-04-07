@@ -17,7 +17,12 @@ class CreatePayloadTest < MiniTest::Test
   end
 
   def test_create_a_payload
-    post '/sources', {identifier: 'yes', rootURL: 'http://www.yes.com'}
+    source = Source.create({identifier: 'yes', rootURL: 'http://www.yes.com'})
+    post '/sources/:identifier/data', {requested_at: "2013-02-16",
+                                             request_type: "POST",
+                                                responded_in: 37,
+                                            source_id: source.id
+    }
     assert_equal 1, Payload.count
     assert_equal 200, last_response.status
     assert_equal "Payload created", last_response.body
