@@ -36,4 +36,15 @@ class CreateSourceTest < MiniTest::Test
     assert_equal 400, last_response.status
     assert_equal "Rooturl can't be blank", last_response.body
   end
+
+  def test_cannot_create_source_if_identifier_already_exists
+    post '/sources', source1 = {identifier: 'cheese', rootURL: "www.cheese.com"}
+    assert_equal "cheese", source1[:identifier]
+    assert_equal 1, Source.count
+
+    post '/sources', source2 = {identifier: 'cheese', rootURL: "www.cheese.com"}
+    assert_equal 1, Source.count
+    assert_equal 403, last_response.status
+    assert_equal "Identifier already exists", last_response.body
+  end
 end
