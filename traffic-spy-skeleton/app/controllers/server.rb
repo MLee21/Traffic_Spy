@@ -30,20 +30,25 @@ module TrafficSpy
 
     post '/sources/:identifier/data' do |identifier|
       source = Source.find_by(identifier: identifier)
+
       # payload_creator = PayloadCreator.create(params[:payload], source)
       # status payload_creator.status
       # body payload_creator.body
       # pc = PayloadCreator.new(source, params)
       # parsed = pc.create_parsed_data
+
       source = Source.find_by(identifier: identifier)
       if params[:payload].blank?
         status 400
         "Payload is missing"
+      # if the payload has an empty url
+      # but payload is JSON
+      # parse it before checking for empty url
       elsif source.nil?
         status 403
         "Forbidden: The url does not exist."
+        #payload must be created before checking for sha (save v. create)
       elsif Payload.exists?
-     # elsif Payload.where[sha: sha]
         status 403
         "Forbidden: Request has already been received."
       else
