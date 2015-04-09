@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150409164423) do
+ActiveRecord::Schema.define(version: 20150409180559) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 20150409164423) do
     t.integer  "referral_id"
     t.integer  "user_agent_id"
     t.integer  "ip_id"
+    t.string   "sha"
   end
 
   create_table "referrals", force: :cascade do |t|

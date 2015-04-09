@@ -1,5 +1,6 @@
 require 'byebug'
 require 'json'
+require 'digest'
 
 module TrafficSpy
   class Server < Sinatra::Base
@@ -28,6 +29,12 @@ module TrafficSpy
       end
 
     post '/sources/:identifier/data' do |identifier|
+      source = Source.find_by(identifier: identifier)
+      # payload_creator = PayloadCreator.create(params[:payload], source)
+      # status payload_creator.status
+      # body payload_creator.body
+      # pc = PayloadCreator.new(source, params)
+      # parsed = pc.create_parsed_data
       source = Source.find_by(identifier: identifier)
       if params[:payload].blank?
         status 400
