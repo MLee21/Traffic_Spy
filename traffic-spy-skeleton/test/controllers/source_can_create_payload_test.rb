@@ -18,7 +18,7 @@ class CreatePayloadTest < MiniTest::Test
   end
 
   def test_create_a_payload
-    source = Source.create({identifier: "jumpstartlab", rootURL: "http://jumpstartlab.com"})
+    source = Source.create({identifier: "jumpstartlab", root_url: "http://jumpstartlab.com"})
     post '/sources/jumpstartlab/data', 'payload' => '{ "url":"http://jumpstartlab.com/blog", "requestedAt":"2013-02-16 21:38:28 -0700", "respondedIn":37, "referredBy":"http://jumpstartlab.com", "requestType":"GET", "parameters":[], "eventName": "socialLogin", "userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17", "resolutionWidth":"1920", "resolutionHeight":"1280", "ip":"63.29.38.211"}'
     
     payload1 = Payload.first
@@ -38,7 +38,7 @@ class CreatePayloadTest < MiniTest::Test
   end
 
   def test_return_error_if_payload_is_missing
-    source = Source.create({identifier: "jumpstartlab", rootURL: "http://jumpstartlab.com"})
+    source = Source.create({identifier: "jumpstartlab", root_url: "http://jumpstartlab.com"})
     post '/sources/jumpstartlab/data'
 
     assert_equal 400, last_response.status
@@ -46,7 +46,7 @@ class CreatePayloadTest < MiniTest::Test
   end
 
   def test_return_error_if_payload_is_empty
-    source = Source.create({identifier: "jumpstartlab", rootURL: "http://jumpstartlab.com"})
+    source = Source.create({identifier: "jumpstartlab", root_url: "http://jumpstartlab.com"})
     post '/sources/jumpstartlab/data', 'payload' => ''
 
     assert_equal 400, last_response.status
@@ -54,7 +54,7 @@ class CreatePayloadTest < MiniTest::Test
   end
 
   def test_return_error_if_request_payload_has_already_been_received
-    source = Source.create({identifier: "yolo", rootURL: "http://yolo.com"})
+    source = Source.create({identifier: "yolo", root_url: "http://yolo.com"})
     post '/sources/yolo/data', 'payload' => '{ "url":"http://yolo.com/blog", "requestedAt":"2015-03-15 21:38:28 -0700", "respondedIn":32, "referredBy":"http://yourmom.com", "requestType":"GET", "parameters":[], "eventName": "YOLO", "userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17", "resolutionWidth":"1920", "resolutionHeight":"1280", "ip":"62.23.37.212"}'
     assert_equal true, Payload.exists?
     post '/sources/yolo/data', 'payload' => '{ "url":"http://yolo.com/blog", "requestedAt":"2015-03-15 21:38:28 -0700", "respondedIn":32, "referredBy":"http://yourmom.com", "requestType":"GET", "parameters":[], "eventName": "YOLO", "userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17", "resolutionWidth":"1920", "resolutionHeight":"1280", "ip":"62.23.37.212"}'

@@ -3,6 +3,7 @@ require 'json'
 
 module TrafficSpy
   class Server < Sinatra::Base
+
     get '/' do
       erb :index
     end
@@ -12,10 +13,11 @@ module TrafficSpy
     end
 
     post '/sources' do
-      source = Source.create(params)
+      source = Source.new(identifier: params[:identifier],
+                              root_url: params[:rootUrl])
         if source.save
           status 200
-          "Source created"
+          {identifier: source.identifier}.to_json
         elsif Source.exists?(identifier: source.identifier)
           status 403
           source.errors.full_messages

@@ -1,2 +1,3 @@
-class UserAgent < ActiveRecord::Base
-end
+
+  class UserAgent < ActiveRecord::Base
+  end
