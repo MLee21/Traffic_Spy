@@ -1,2 +1,4 @@
-class Referral < ActiveRecord::Base
+module TrafficSpy
+  class Referral < ActiveRecord::Base
+  end
 end

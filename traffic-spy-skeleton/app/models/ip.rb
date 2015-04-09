@@ -1,2 +1,4 @@
-class Ip < ActiveRecord::Base
+module TrafficSpy
+  class Ip < ActiveRecord::Base
+  end
 end

@@ -43,6 +43,7 @@ module TrafficSpy
         status 403
         "Forbidden: The url does not exist."
       elsif Payload.exists?
+     # elsif Payload.where[sha: sha]
         status 403
         "Forbidden: Request has already been received."
       else

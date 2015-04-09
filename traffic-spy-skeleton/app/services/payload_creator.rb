@@ -1,3 +1,4 @@
+module TrafficSpy
 class PayloadCreator 
 
   def initialize(source, raw_payload)
@@ -39,4 +40,5 @@ class PayloadCreator
       sha:          payload_attributes[:sha]
     )
   end
+end
 end
