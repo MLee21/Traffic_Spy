@@ -26,16 +26,20 @@ module TrafficSpy
       end
 
     post '/sources/:identifier/data' do |identifier|
-      source_id = Source.find_or_create_by(identifier: identifier).id
-      hash = JSON.parse(params[:payload]) 
-      Payload.create(
-                  { requested_at: hash["requestedAt"],
-                    request_type: hash["requestType"],
-                    responded_in: hash["respondedIn"],
-                    source_id: source_id
-        }) 
-      status 200
-      "Payload created"
+      source = Source.find_by(identifier: identifier)
+      if params[:payload].blank?
+        status 400
+        "Payload is missing"
+      elsif source.nil?
+        status 403
+        "Forbidden"
+      else
+        source
+        payload_creator = PayloadCreator.new(source, params[:payload])
+        payload_creator.create_payload
+        status 200
+        "Payload created"
+      end
     end
   end
 end
