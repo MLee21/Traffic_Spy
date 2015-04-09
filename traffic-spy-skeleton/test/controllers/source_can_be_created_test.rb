@@ -45,6 +45,6 @@ class CreateSourceTest < MiniTest::Test
     post '/sources', source2 = {identifier: 'cheese', rootURL: "www.cheese.com"}
     assert_equal 1, Source.count
     assert_equal 403, last_response.status
-    assert_equal "Identifier already exists", last_response.body
+    assert_equal "Identifier has already been taken", last_response.body
   end
 end

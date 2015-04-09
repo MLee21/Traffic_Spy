@@ -25,6 +25,14 @@ class CreatePayloadTest < MiniTest::Test
     assert_equal 1, Payload.count
     assert_equal Time.parse("2013-02-16 21:38:28 -0700"), payload1.requested_at
     assert_equal "http://jumpstartlab.com/blog", payload1.url.address
+    assert_equal 37, payload1.responded_in
+    assert_equal "http://jumpstartlab.com", payload1.referral.referred_by
+    assert_equal "GET", payload1.request_type
+    assert_equal "socialLogin", payload1.event.name
+    assert_equal "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17", payload1.user_agent.information
+    assert_equal "1920", payload1.resolution.resolution_width
+    assert_equal "1280", payload1.resolution.resolution_height
+    assert_equal "63.29.38.211", payload1.ip.address
     assert_equal 200, last_response.status
     assert_equal "Payload created", last_response.body
   end
@@ -46,7 +54,13 @@ class CreatePayloadTest < MiniTest::Test
   end
 
   def test_return_error_if_request_payload_has_already_been_received
-    skip
+    source = Source.create({identifier: "yolo", rootURL: "http://yolo.com"})
+    post '/sources/yolo/data', 'payload' => '{ "url":"http://yolo.com/blog", "requestedAt":"2015-03-15 21:38:28 -0700", "respondedIn":32, "referredBy":"http://yourmom.com", "requestType":"GET", "parameters":[], "eventName": "YOLO", "userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17", "resolutionWidth":"1920", "resolutionHeight":"1280", "ip":"62.23.37.212"}'
+    assert_equal true, Payload.exists?
+    post '/sources/yolo/data', 'payload' => '{ "url":"http://yolo.com/blog", "requestedAt":"2015-03-15 21:38:28 -0700", "respondedIn":32, "referredBy":"http://yourmom.com", "requestType":"GET", "parameters":[], "eventName": "YOLO", "userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17", "resolutionWidth":"1920", "resolutionHeight":"1280", "ip":"62.23.37.212"}'
+    
+    assert_equal 403, last_response.status
+    assert_equal "Forbidden: Request has already been received.", last_response.body
   end
 
   def test_if_url_doesnt_exist_application_not_registered
@@ -54,7 +68,7 @@ class CreatePayloadTest < MiniTest::Test
 
     assert_equal 0, Payload.count
     assert_equal 403, last_response.status
-    assert_equal "Forbidden", last_response.body
+    assert_equal "Forbidden: The url does not exist.", last_response.body
   end
 end
 

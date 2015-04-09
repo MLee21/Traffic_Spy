@@ -18,7 +18,7 @@ module TrafficSpy
           "Source created"
         elsif Source.exists?(identifier: source.identifier)
           status 403
-          "Identifier already exists"
+          source.errors.full_messages
         else
           status 400
           source.errors.full_messages
@@ -32,7 +32,10 @@ module TrafficSpy
         "Payload is missing"
       elsif source.nil?
         status 403
-        "Forbidden"
+        "Forbidden: The url does not exist."
+      elsif Payload.exists?
+        status 403
+        "Forbidden: Request has already been received."
       else
         source
         payload_creator = PayloadCreator.new(source, params[:payload])
