@@ -14,50 +14,40 @@ module TrafficSpy
     end
 
     post '/sources' do
-      source = Source.new(identifier: params[:identifier],
-                              root_url: params[:rootUrl])
-        if source.save
-          status 200
-          {identifier: source.identifier}.to_json
-        elsif Source.exists?(identifier: source.identifier)
-          status 403
-          source.errors.full_messages
-        else
-          status 400
-          source.errors.full_messages
-        end
-      end
+      sc = SourceCreator.new
+      sc.raw_source(params[:identifier], params[:rootUrl]) 
+      status sc.status
+      sc.message
+    end
 
     post '/sources/:identifier/data' do |identifier|
       source = Source.find_by(identifier: identifier)
-
-      # payload_creator = PayloadCreator.create(params[:payload], source)
-      # status payload_creator.status
-      # body payload_creator.body
-      # pc = PayloadCreator.new(source, params)
-      # parsed = pc.create_parsed_data
-
-      source = Source.find_by(identifier: identifier)
-      if params[:payload].blank?
-        status 400
-        "Payload is missing"
-      # if the payload has an empty url
-      # but payload is JSON
-      # parse it before checking for empty url
-      elsif source.nil?
-        status 403
-        "Forbidden: The url does not exist."
-        #payload must be created before checking for sha (save v. create)
-      elsif Payload.exists?
-        status 403
-        "Forbidden: Request has already been received."
-      else
-        source
-        payload_creator = PayloadCreator.new(source, params[:payload])
-        payload_creator.create_payload
-        status 200
-        "Payload created"
-      end
+      new_payload = PayloadCreator.new(source, params[:payload])
+      new_payload.validate
+      status new_payload.status
+      new_payload.body
+      # source = Source.find_by(identifier: identifier)
+      # if params[:payload].blank?
+      #   status 400
+      #   "Payload is missing"
+      # # if the payload has an empty url
+      # # but payload is JSON
+      # # parse it before checking for empty url
+      # # elsif source.nil? 
+      # elsif Payload.where(url: false) && source.nil?
+      #   status 403
+      #   "Forbidden: Application does not exist."
+      # elsif Payload.exists?
+      #   status 403
+      #   "Forbidden: Request has already been received" 
+      #   #payload must be created before checking for sha (save v. create)
+      # else
+      #   source
+      #   payload_creator = PayloadCreator.new(source, params[:payload])
+      #   payload_creator.create_payload
+      #   status 200
+      #   "Payload created"
+      # end
     end
   end
 end

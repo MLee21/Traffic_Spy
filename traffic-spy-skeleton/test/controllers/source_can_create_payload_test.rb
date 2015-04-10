@@ -76,16 +76,18 @@ class CreatePayloadTest < MiniTest::Test
 
     assert_equal 0, TrafficSpy::Payload.count
     assert_equal 403, last_response.status
-    assert_equal "Forbidden: The url does not exist.", last_response.body
+    assert_equal "Forbidden: Application does not exist.", last_response.body
   end
 
   def test_if_identical_payloads_have_identical_shas
     raw_payload = ('{"url":"http://yolo.com/blog", "requestedAt":"2015-03-15 21:38:28 -0700", "respondedIn":32, "referredBy":"http://yourmom.com", "requestType":"GET", "parameters":[], "eventName": "YOLO", "userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17", "resolutionWidth":"1920", "resolutionHeight":"1280", "ip":"62.23.37.212"}')
     source1 = TrafficSpy::Source.create({identifier: "yolo", root_url: "http://yolo.com"})
-    payload22 = TrafficSpy::PayloadCreator.new(source1, raw_payload)
-    new_payload = payload22.create_payload
-    assert_equal TrafficSpy::Payload.all.count, TrafficSpy::Payload.select(:sha).uniq.count
-    assert_equal "cbf57c8f734c6f0f12d31faf7918a2ebdf978cd42529a109578ca7e1ed84cea4", new_payload[:sha]
+    payload_creator = TrafficSpy::PayloadCreator.new(source1, raw_payload)
+    payload_creator.validate
+    assert_equal 1, TrafficSpy::Payload.all.count
+    payload_creator.validate
+    assert_equal 1, TrafficSpy::Payload.all.count
+    assert_equal 403, payload_creator.status
   end
 end
 
