@@ -28,6 +28,19 @@ module TrafficSpy
       new_payload.body
     end
 
-    
+    get '/sources/:identifier' do |identifier|
+      # if source = Source.find_by(identifier: identifier)
+      #   # Source.most_requested_to_least_requested
+      #   # Source.browsers_from_index
+      #   # Source.platforms_from_index
+      #   # Source.resolutions_index
+      #   # Source.average_responses_per_url
+      # else
+      #   "Identifier does not exist."
+      # end
+      # create method that populates aggregate data
+      # hyperlinks of each url to view url specific data
+      # hyperlink to view aggregate event data
+    end
   end
 end

@@ -1,6 +1,6 @@
 module TrafficSpy
   class Url < ActiveRecord::Base
     has_many :payloads
-    validates :address, presence: true
+    validates :address, uniqueness: true, presence: true
   end
 end
