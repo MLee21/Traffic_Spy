@@ -1,14 +1,15 @@
+require 'useragent'
+
 module TrafficSpy
   class Source < ActiveRecord::Base
     has_many :payloads
     validates :identifier, uniqueness: :true, presence: true
     validates :root_url, presence: true
 
-    attr_reader :url_addresses
+    attr_reader :url_addresses, :browsers
    
     def self.url_index(id)
-      related_payloads = Payload.where(source_id: id)
-      ids = related_payloads.pluck(:url_id)
+      ids = find_by_source_id(id).pluck(:url_id)
       url_objects = ids.map do |id|
         Url.where(id: id)
       end
@@ -18,11 +19,21 @@ module TrafficSpy
       @url_addresses = index
     end
 
+    def self.browser_index(id)
+      ua = find_by_source_id(id).pluck(:user_agent_id)
+      user_agents = ua.map {|id| UserAgent.where(id: id)}
+      info = user_agents.map {|ua| ua.pluck(:information)}
+    end
+
     def self.most_requested_to_least_requested
       remove_counts_from_address_array
     end
 
     private 
+
+    def self.find_by_source_id(id)
+      Payload.where(source_id: id)
+    end
 
     def self.group_by_frequency
       @url_addresses.group_by{|x| x}
