@@ -8,6 +8,8 @@ module TrafficSpy
 
     attr_reader :url_addresses, :browsers, :screen_resolutions
    
+    
+   
     def self.url_index(id)
       payloads = find_by_source_id(id)
       url_ids = payloads.map {|payload| payload.url_id}

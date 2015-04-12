@@ -27,6 +27,5 @@ module TrafficSpy
       hour_breakdown = hours_grouped.keys
       hour_breakdown.zip(frequency)    
     end
-  
   end
 end

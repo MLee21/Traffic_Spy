@@ -15,30 +15,30 @@ module TrafficSpy
     end
 
     def self.longest_response_time(url)
-      url_id = Url.where(address: url).pluck(:id)
-      response_times = Payload.where(url_id: url_id).pluck(:responded_in)
+      url_id = find_the_url_id(url)
+      response_times = find_response_times_from_payload(url_id)
       response_times.max_by{|x| x}
     end
 
     def self.shortest_response_time(url)
-      url_id = Url.where(address: url).pluck(:id)
-      response_times = Payload.where(url_id: url_id).pluck(:responded_in)
+      url_id = find_the_url_id(url)
+      response_times = find_response_times_from_payload(url_id)
       response_times.min_by{|x| x}
     end
 
     def self.average_response_time(url)
-      url_id = Url.where(address: url).pluck(:id)
-      response_times = Payload.where(url_id: url_id).pluck(:responded_in)
+      url_id = find_the_url_id(url)
+      response_times = find_response_times_from_payload(url_id)
       response_times.inject(0.0){|x, el| x + el}/response_times.size
     end
 
     def self.http_verbs(url)
-      url_id = Url.where(address: url).pluck(:id)
+      url_id = find_the_url_id(url)
       Payload.where(url_id: url_id).pluck(:request_type).uniq
     end
 
     def self.most_referred(url)
-      url_id = Url.where(address: url).pluck(:id)
+      url_id = find_the_url_id(url)
       referral_ids = Payload.where(url_id: url_id).pluck(:referral_id)
       referrals = referral_ids.map {|id| Referral.where(id: id)}
       referred_bys = referrals.map {|ref| ref.pluck(:referred_by)}
@@ -46,11 +46,21 @@ module TrafficSpy
     end
 
     def self.most_popular_user_agent(url)
-      url_id = Url.where(address: url).pluck(:id)
+      url_id = find_the_url_id(url)
       ua_id = Payload.where(url_id: url_id).pluck(:user_agent_id)
       uas = ua_id.map {|id| UserAgent.where(id: id)}
       user_agents = uas.map {|ua| ua.pluck(:information)}
       user_agents.max_by{|x| x}.pop
+    end
+
+    private
+
+    def self.find_the_url_id(url)
+      Url.where(address: url).pluck(:id)
+    end
+
+    def self.find_response_times_from_payload(url_id)
+       Payload.where(url_id: url_id).pluck(:responded_in)
     end
   end
 end

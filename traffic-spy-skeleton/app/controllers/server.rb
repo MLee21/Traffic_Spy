@@ -18,6 +18,7 @@ module TrafficSpy
       sc.raw_source(params[:identifier], params[:rootUrl]) 
       status sc.status
       sc.message
+      erb :index
     end
 
     post '/sources/:identifier/data' do |identifier|
@@ -29,15 +30,16 @@ module TrafficSpy
     end
 
     get '/sources/:identifier' do |identifier|
-      # if source = Source.find_by(identifier: identifier)
-      #   # Source.most_requested_to_least_requested
-      #   # Source.browsers_from_index
-      #   # Source.platforms_from_index
-      #   # Source.resolutions_index
-      #   # Source.average_responses_per_url
-      # else
-      #   "Identifier does not exist."
-      # end
+      source = Source.find_by(identifier: identifier)
+      if source.exists?
+        # Source.most_requested_to_least_requested
+        # Source.browsers_from_index
+        # Source.platforms_from_index
+        # Source.resolutions_index
+        # Source.average_responses_per_url
+      else
+        "Identifier does not exist."
+      end
       # create method that populates aggregate data
       # hyperlinks of each url to view url specific data
       # hyperlink to view aggregate event data
@@ -52,6 +54,10 @@ module TrafficSpy
        # most popular referrals
        # most popular user agents
        # error if identifier doesn't exist
+    end
+
+    get '/sources/:identifier/events' do |identifier|
+
     end
   end
 end
