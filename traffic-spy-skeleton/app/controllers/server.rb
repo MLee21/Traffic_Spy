@@ -42,5 +42,16 @@ module TrafficSpy
       # hyperlinks of each url to view url specific data
       # hyperlink to view aggregate event data
     end
+
+    get '/sources/:identifier/urls/:relative/?:path?' do |identifier, relative, path| 
+      source = Source.find_by(identifier: identifier)
+       # assemble full url in URL class
+       # go to payload and find response times
+       # find longest, shortest, response times
+       # http verbs
+       # most popular referrals
+       # most popular user agents
+       # error if identifier doesn't exist
+    end
   end
 end

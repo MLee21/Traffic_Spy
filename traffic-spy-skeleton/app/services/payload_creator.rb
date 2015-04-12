@@ -46,20 +46,3 @@ module TrafficSpy
     end
   end
 end
-
-
- #   byebug
-      #   if Payload.exists?
-      #     payload_creator = PayLoadCreator.new(@source, payload_attributes)
-      #     payload_creator.create_payload
-      #     @status = 200
-      #     @body = "Payload created" 
-      # # If the payload already exists
-      # # FIX THIS
-      # # test if sha is unique
-      #   else payload_attributes[:sha].distinct
-      #     @status = 403
-      #     @body = "Forbidden: Request has already been received."     
-    #     end
-    #   end
-    # end
