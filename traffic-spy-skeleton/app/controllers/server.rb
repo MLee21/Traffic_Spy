@@ -16,7 +16,7 @@ module TrafficSpy
 
     post '/sources' do
       sc = SourceCreator.new
-      sc.raw_source(params[:identifier], params[:rootUrl]) 
+      sc.raw_source(params[:identifier], params[:rootUrl])
       status sc.status
       sc.message
     end
@@ -48,16 +48,17 @@ module TrafficSpy
       # hyperlink to view aggregate event data
     end
 
-    get '/sources/:identifier/urls/:relative/?:path?' do |identifier, relative, path| 
-      source = Source.find_by(identifier: identifier)
-       # assemble full url in URL class
-       # go to payload and find response times
-       # find longest, shortest, response times
-       # http verbs
-       # most popular referrals
-       # most popular user agents
-       # error if identifier doesn't exist
+    get '/sources/:identifier/urls/:relative/?:path?' do |identifier, relative, path|
+      associated_source = Source.find_by(identifier: identifier)
+      url = Url.assemble_full_url(associated_source, relative, path)
+      if Url.requested?(url)
+        @url_stats = Url.statistics(url)
+        erb :url_stats
+      else
+        "Url has not been requested"
+      end
     end
+
 
     get '/sources/:identifier/events' do |identifier|
       @source = Source.find_by(identifier: identifier)

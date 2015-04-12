@@ -1,0 +1,27 @@
+<h1>Application URL Statistics</h1>
+
+<h3>Longest Response Time</h3>
+<p>
+  <%= @url_stats[:longest] %>
+</p>
+
+<h3>Shortest Response Time</h3>
+<p>
+  <%= @url_stats[:shortest] %>
+</p>
+<h3>Average Response Time</h3>
+<p>
+  <%= @url_stats[:average] %>
+</p>
+<h3>HTTP Verbs Used</h3>
+<p>
+  <%= @url_stats[:verbs] %>
+</p>
+<h3>Most Popular Referrals</h3>
+<p>
+  <%= @url_stats[:most_popular_reffers] %>
+</p>
+<h3>Most Popular User Agents</h3>
+<p>
+  <%= @url_stats[:most_popular_agents] %>
+</p>
