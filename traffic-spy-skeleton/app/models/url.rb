@@ -53,6 +53,20 @@ module TrafficSpy
       user_agents.max_by{|x| x}.pop
     end
 
+    def self.statistics(url)
+      { longest: longest_response_time(url),
+        shortest: shortest_response_time(url),
+        average: average_response_time(url),
+        verbs: http_verbs(url),
+        most_popular_reffers: most_referred(url),
+        most_popular_agents: most_popular_user_agent(url)
+      }
+    end
+
+    def self.requested?(url)
+      find_the_url_id(url).pop.is_a? Fixnum
+    end
+
     private
 
     def self.find_the_url_id(url)
