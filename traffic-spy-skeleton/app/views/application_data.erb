@@ -1,0 +1,48 @@
+
+
+<h1><%= @source.identifier.upcase %></h1>
+
+<h2>Most Requested to Least Requested Urls</h2>
+<ul>
+  <% require 'uri' %>
+  <% @urls.each_with_index do |url, i| %>
+  <li><a href="/sources/<%=@source.identifier%>/urls<%=@paths[i] %>"><%= url %></a></li>
+  <% end %>
+</ul>
+
+   
+<h2>Web Browser Breakdown</h2>
+<ul>
+  <% @browsers.each do |url| %>
+  <li><%= url %></li>
+  <% end %>
+</ul>
+
+
+<h2>Operating System Breakdown</h2>
+<ul>
+  <% @platforms.each do |url| %>
+  <li>  <%= url %></li>
+  <% end %>
+</ul>
+
+
+<h2>Screen Resolutions</h2>
+<ul>
+  <% @resolutions.each do |url| %>
+  <li>  <%= url %></li>
+  <% end %>
+</ul>
+
+
+<h2>Average Responses Times Per Url From Longest to Shortest</h2>
+<ul>
+  <% @response_times.each do |url| %>
+  <li>  <%= url %></li>
+  <% end %>
+</ul>
+
+<h2><a href = '/sources/<%=@source.identifier %>/events'>Events</a></h2>
+
+
+<h6><a href = '/'>Source Index</a></h6>

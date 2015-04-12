@@ -6,6 +6,7 @@ module TrafficSpy
   class Server < Sinatra::Base
 
     get '/' do
+      @sources = Source.all
       erb :index
     end
 
@@ -18,7 +19,6 @@ module TrafficSpy
       sc.raw_source(params[:identifier], params[:rootUrl]) 
       status sc.status
       sc.message
-      erb :index
     end
 
     post '/sources/:identifier/data' do |identifier|
@@ -30,17 +30,20 @@ module TrafficSpy
     end
 
     get '/sources/:identifier' do |identifier|
-      source = Source.find_by(identifier: identifier)
-      if source.exists?
-        # Source.most_requested_to_least_requested
-        # Source.browsers_from_index
-        # Source.platforms_from_index
-        # Source.resolutions_index
-        # Source.average_responses_per_url
+      @source = Source.find_by(identifier: identifier)
+      if @source.nil?
+        "Identifer does not exist."
       else
-        "Identifier does not exist."
+        Source.url_index(@source.id)
+        @urls = Source.most_requested_to_least_requested
+        @paths = @urls.map {|url| URI(url).path}
+        Source.browser_index(@source.id)
+        @browsers = Source.browsers_from_index
+        @platforms = Source.platforms_from_index
+        @resolutions = Source.resolutions_index(@source.id)
+        @response_times = Source.average_responses_per_url
+        erb :application_data
       end
-      # create method that populates aggregate data
       # hyperlinks of each url to view url specific data
       # hyperlink to view aggregate event data
     end
@@ -57,7 +60,21 @@ module TrafficSpy
     end
 
     get '/sources/:identifier/events' do |identifier|
+      @source = Source.find_by(identifier: identifier)
+      if Event.events_by_frequency(@source.id).nil?
+        "No events have been defined"
+      else
+        @events = Event.events_by_frequency(@source.id)
+        erb :event
+      end
+    end
 
+    get '/sources/:identifier/events/:name' do |identifier, name|
+      @name = name
+      @source = Source.find_by(identifier: identifier)
+      @event_total = Event.event_total(name)
+      @event_hours = Event.event_by_hour(name)
+      erb :event_details
     end
   end
 end
