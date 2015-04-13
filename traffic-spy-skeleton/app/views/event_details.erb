@@ -1,10 +1,7 @@
 <h1><%=@name %></h1>
- <p><%=@event_total %></p>
+ <p>Total Number of Event Occurrences : <%=@event_total %></p>
  <p><%@event_hours.each do |event|  %>
   <%= "#{event[1]} event(s) at Hour: #{event[0]}" %>
 <% end %>
-
-
-
  </p>
-<!-- <h6><a href='/source' -->
+ <%= partial :'partials/welcome' %>

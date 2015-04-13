@@ -22,3 +22,4 @@ class MiniTest::Test
     DatabaseCleaner.clean
   end
 end
+

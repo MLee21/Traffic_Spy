@@ -10,6 +10,16 @@ class UrlTest < MiniTest::Test
     assert_equal "http://yolo.com/bacon/cheese", full_url1
   end
 
+  def test_it_will_return_the_longest_response
+    raw_payload1 = ('{"url":"http://yolo.com/bacon/cheese", "requestedAt":"2011-03-15 21:38:28 -0700", "respondedIn":32, "referredBy":"http://yourmom.com", "requestType":"GET", "parameters":[], "eventName": "YOLO", "userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17", "resolutionWidth":"1920", "resolutionHeight":"1280", "ip":"62.23.37.212"}')
+    source1 = TrafficSpy::Source.create({identifier: "yolo", root_url: "http://yolo.com"})
+    payload_creator = TrafficSpy::PayloadCreator.new(source1, raw_payload1)
+    payload_creator.validate
+
+    full_url = TrafficSpy::Url.assemble_full_url(source1, "bacon", "cheese")
+    assert_equal 32, TrafficSpy::Url.longest_response_time(full_url)
+  end
+
   def test_it_will_return_the_longest_response_time_for_a_url
     raw_payload1 = ('{"url":"http://yolo.com/bacon", "requestedAt":"2011-03-15 21:38:28 -0700", "respondedIn":32, "referredBy":"http://yourmom.com", "requestType":"GET", "parameters":[], "eventName": "YOLO", "userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17", "resolutionWidth":"1920", "resolutionHeight":"1280", "ip":"62.23.37.212"}')
     raw_payload2 = ('{"url":"http://yolo.com/bacon", "requestedAt":"2014-02-25 21:38:28 -0700", "respondedIn":20, "referredBy":"http://yourmom.com", "requestType":"GET", "parameters":[], "eventName": "YOLO", "userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17", "resolutionWidth":"1920", "resolutionHeight":"1280", "ip":"62.23.37.212"}')

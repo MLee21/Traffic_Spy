@@ -1,6 +1,7 @@
 <h1>Hello, Traffic Spyer</h1>
 <h2>Source Index</h2>
 <% @sources.each do |source| %>
-<h3><a href='/sources/<%=source.identifier%>'><%= source.identifier %>
+<h3><a href='/sources/<%=source.identifier%>'><%= source.identifier %></a>
 </h3>
 <% end %>
+<%= partial :'partials/welcome' %>

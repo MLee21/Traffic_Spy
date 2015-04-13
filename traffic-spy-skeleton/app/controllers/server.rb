@@ -4,6 +4,8 @@ require 'digest'
 
 module TrafficSpy
   class Server < Sinatra::Base
+    register Sinatra::Partial
+    set :partial_template_engine, :erb
 
     get '/' do
       @sources = Source.all
@@ -44,8 +46,6 @@ module TrafficSpy
         @response_times = Source.average_responses_per_url
         erb :application_data
       end
-      # hyperlinks of each url to view url specific data
-      # hyperlink to view aggregate event data
     end
 
     get '/sources/:identifier/urls/:relative/?:path?' do |identifier, relative, path|
@@ -62,7 +62,7 @@ module TrafficSpy
 
     get '/sources/:identifier/events' do |identifier|
       @source = Source.find_by(identifier: identifier)
-      if Event.events_by_frequency(@source.id).nil?
+      if @source.nil?
         "No events have been defined"
       else
         @events = Event.events_by_frequency(@source.id)
